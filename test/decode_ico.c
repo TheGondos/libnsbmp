@@ -24,7 +24,7 @@
 
 /* Currently the library returns the data in RGBA format,
  * so there are 4 bytes per pixel */
-#define BYTES_PER_PIXEL 4
+#define BYTES_PER_PIXEL sizeof(uint32_t)
 
 /* White with alpha masking. */
 #define TRANSPARENT_COLOR 0xffffffff
@@ -40,13 +40,6 @@ static unsigned char *bitmap_get_buffer(void *bitmap)
 {
         assert(bitmap);
         return bitmap;
-}
-
-
-static size_t bitmap_get_bpp(void *bitmap)
-{
-        (void) bitmap;  /* unused */
-        return BYTES_PER_PIXEL;
 }
 
 
@@ -175,7 +168,6 @@ int main(int argc, char *argv[])
                 bitmap_create,
                 bitmap_destroy,
                 bitmap_get_buffer,
-                bitmap_get_bpp
         };
         uint16_t width, height;
         ico_collection ico;

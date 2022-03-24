@@ -17,7 +17,7 @@
 #include <sys/stat.h>
 #include "../include/libnsbmp.h"
 
-#define BYTES_PER_PIXEL 4
+#define BYTES_PER_PIXEL sizeof(uint32_t)
 #define MAX_IMAGE_BYTES (48 * 1024 * 1024)
 #define TRANSPARENT_COLOR 0xffffffff
 
@@ -25,8 +25,8 @@
 static void *bitmap_create(int width, int height, unsigned int state)
 {
         (void) state;  /* unused */
-        /* ensure a stupidly large (>50Megs or so) bitmap is not created */
-        if (((long long)width * (long long)height) > (MAX_IMAGE_BYTES/BYTES_PER_PIXEL)) {
+	/* Ensure a stupidly large bitmap is not created */
+	if (width > 4096 || height > 4096) {
                 return NULL;
         }
         return calloc(width * height, BYTES_PER_PIXEL);
@@ -37,13 +37,6 @@ static unsigned char *bitmap_get_buffer(void *bitmap)
 {
         assert(bitmap);
         return bitmap;
-}
-
-
-static size_t bitmap_get_bpp(void *bitmap)
-{
-        (void) bitmap;  /* unused */
-        return BYTES_PER_PIXEL;
 }
 
 
@@ -144,7 +137,6 @@ int main(int argc, char *argv[])
                 bitmap_create,
                 bitmap_destroy,
                 bitmap_get_buffer,
-                bitmap_get_bpp
         };
         bmp_result code;
         bmp_image bmp;
