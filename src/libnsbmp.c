@@ -975,8 +975,10 @@ bmp_decode_rle8(bmp_image *bmp, uint8_t *data, int bytes)
                                         scanline[x++] = bmp->colour_table[idx];
                                 }
 
-                                if ((length & 1) && (*data++ != 0x00))
-                                        return BMP_DATA_ERROR;
+                                if ((length & 1) && (*data++ != 0x00)) {
+                                    // some bmps don't have that byte set to 0 so just ignore the value
+                                    //return BMP_DATA_ERROR;
+                                }
 
                                 break;
                         }
