@@ -894,8 +894,9 @@ bmp_decode_rle8(bmp_image *bmp, uint8_t *data, int bytes)
         uint32_t x = 0, y = 0, last_y = 0;
         uint32_t pixel = 0;
 
-        if (bmp->ico)
+        if (bmp->ico) {
                 return BMP_DATA_ERROR;
+        }
 
         swidth = sizeof(uint32_t) * bmp->width;
         top = bmp->bitmap_callbacks.bitmap_get_buffer(bmp->bitmap);
@@ -917,8 +918,10 @@ bmp_decode_rle8(bmp_image *bmp, uint8_t *data, int bytes)
                                 x = 0;
                                 if (last_y == y) {
                                         y++;
-                                        if (y >= bmp->height)
-                                                return BMP_DATA_ERROR;
+                                        if (y >= bmp->height) {
+                                                // Some bitmaps ends with a final line return
+                                                return BMP_OK;
+                                        }
                                 }
                                 last_y = y;
                                 break;
@@ -932,11 +935,13 @@ bmp_decode_rle8(bmp_image *bmp, uint8_t *data, int bytes)
                                 if (data + 2 > end)
                                         return BMP_INSUFFICIENT_DATA;
                                 x += *data++;
-                                if (x >= bmp->width)
+                                if (x >= bmp->width) {
                                         return BMP_DATA_ERROR;
+                                }
                                 y += *data++;
-                                if (y >= bmp->height)
+                                if (y >= bmp->height) {
                                         return BMP_DATA_ERROR;
+                                }
                                 break;
 
                         default:
@@ -962,16 +967,19 @@ bmp_decode_rle8(bmp_image *bmp, uint8_t *data, int bytes)
                                         if (x >= bmp->width) {
                                                 x = 0;
                                                 y++;
-                                                if (y >= bmp->height)
-                                                        return BMP_DATA_ERROR;
+                                                if (y >= bmp->height) {
+                                                        // Some bitmaps ends with a final line return
+                                                        return BMP_OK;
+                                                }
                                                 if (bmp->reversed) {
                                                         scanline += bmp->width;
                                                 } else {
                                                         scanline -= bmp->width;
                                                 }
                                         }
-                                        if (idx >= bmp->colours)
+                                        if (idx >= bmp->colours) {
                                                 return BMP_DATA_ERROR;
+                                        }
                                         scanline[x++] = bmp->colour_table[idx];
                                 }
 
@@ -1005,16 +1013,19 @@ bmp_decode_rle8(bmp_image *bmp, uint8_t *data, int bytes)
                          * simply copying routines if so
                          */
                         idx = (uint32_t) *data++;
-                        if (idx >= bmp->colours)
+                        if (idx >= bmp->colours) {
                                 return BMP_DATA_ERROR;
+                        }
 
                         pixel = bmp->colour_table[idx];
                         for (i = 0; i < length; i++) {
                                 if (x >= bmp->width) {
                                         x = 0;
                                         y++;
-                                        if (y >= bmp->height)
-                                                return BMP_DATA_ERROR;
+                                        if (y >= bmp->height) {
+                                                // Some bitmaps ends with a final line return
+                                                return BMP_OK;
+                                        }
                                         if (bmp->reversed) {
                                                 scanline += bmp->width;
                                         } else {
