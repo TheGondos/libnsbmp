@@ -953,8 +953,8 @@ bmp_decode_rle8(bmp_image *bmp, uint8_t *data, int bytes)
                                         pixels_left = (y + 1) * bmp->width - x;
                                         scanline = (void *)(bottom - (y * swidth));
                                 }
-                                if (length > pixels_left)
-                                        length = pixels_left;
+                                //if (length > pixels_left)
+                                //        length = pixels_left;
                                 if (data + length > end)
                                         return BMP_INSUFFICIENT_DATA;
 
